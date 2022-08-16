@@ -71,7 +71,7 @@ class Timer {
 
             this.onTime(time);
             if (deltaTime < 1000) {
-            clearInterval(this.intervalId);
+                clearInterval(this.intervalId);
         }
             // updateClockTime(time);
         }, 1000)
