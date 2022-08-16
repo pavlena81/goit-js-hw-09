@@ -25,7 +25,7 @@ const refs = {
     seconds: document.querySelector('span[data-seconds]'),
 };
 
-refs.startBtn.disable = true;
+
 const options = {
   enableTime: true,
   time_24hr: true,
