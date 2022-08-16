@@ -5,35 +5,16 @@
 //     Посмотри демо видео работы таймера.
 
 import flatpickr from "flatpickr";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 
 // Дополнительный импорт стилей
 import "flatpickr/dist/flatpickr.min.css";
 
-import"flatpickr/dist/themes/material_green.css";
+import "flatpickr/dist/themes/material_green.css";
 
+let deltaTime = 0;
 const inputEl = document.getElementById('datetime-picker');
-
-
-
-const options = {
-  enableTime: true,
-  time_24hr: true,
-  defaultDate: new Date(),
-  minuteIncrement: 1,
-    onClose(selectedDates) {
-        if (selectedDates[0] < Date.now()) {
-            return alert('Please choose a date in the future');
-            selectedDates[0] = new Date();
-      }
-        console.log(selectedDates[0]);
-        refs.startBtn.disable = false; 
-        // selectedTimes = selectedDates[0];
-  },
-};
-0
-
-
 
 const refs = {
     inputEl:document.querySelector('#datetime-picker'),
@@ -43,6 +24,28 @@ const refs = {
     minutes: document.querySelector('span[data-minutes]'),
     seconds: document.querySelector('span[data-seconds]'),
 };
+
+refs.startBtn.disable = true;
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+    onClose(selectedDates) {
+        if (selectedDates[0] <=Date.now()) {            
+            return Notify.failure('Please choose a date in the future');
+           
+      }
+        console.log(selectedDates[0]);
+        refs.startBtn.disable = false; 
+        // selectedTimes = selectedDates[0];
+  },
+};
+
+
+
+
+
 flatpickr(refs.inputEl, options);
 const fp = flatpickr(refs.inputEl, options); 
 
@@ -64,14 +67,15 @@ class Timer {
 
         this.intervalId = setInterval(() => {
             const currentTime = Date.now();
-            const deltaTime = fp.selectedDates[0] - currentTime;
+            let deltaTime = fp.selectedDates[0] - currentTime;
             const time = convertMs(deltaTime);
 
             console.log(time);
 
             this.onTime(time);
-            if (deltaTime < 1000) {
+            if ((deltaTime <=1000)) {
                 clearInterval(this.intervalId);
+                return Notify.success('Time is Up');
         }
             // updateClockTime(time);
         }, 1000)
@@ -95,7 +99,10 @@ function updateClockTime({ days, hours, minutes, seconds }) {
 
 
 
-refs.startBtn.addEventListener('click', () => timer.startTimer());
+refs.startBtn.addEventListener('click', () => {
+     refs.startBtn.disabled = true;
+    timer.startTimer();
+});
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
