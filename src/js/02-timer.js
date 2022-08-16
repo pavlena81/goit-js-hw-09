@@ -10,7 +10,7 @@ import flatpickr from "flatpickr";
 // Дополнительный импорт стилей
 import "flatpickr/dist/flatpickr.min.css";
 
-import "flatpickr/dist/themes/material_green.css";
+import"flatpickr/dist/themes/material_green.css";
 
 const inputEl = document.getElementById('datetime-picker');
 
@@ -22,24 +22,29 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
     onClose(selectedDates) {
-        if (selectedDates[0]<=Date.now()) {
-            return alert('Please choose a date in the future'); 
+        if (selectedDates[0] < Date.now()) {
+            return alert('Please choose a date in the future');
+            selectedDates[0] = new Date();
       }
         console.log(selectedDates[0]);
         refs.startBtn.disable = false; 
+        // selectedTimes = selectedDates[0];
   },
 };
+0
 
-flatpickr(inputEl, options);
 
 
 const refs = {
+    inputEl:document.querySelector('#datetime-picker'),
     startBtn: document.querySelector('button[data-start]'),
-    days: document.querySelector('[data-days]'),
-    hours: document.querySelector('[data-hours]'),
-    minutes: document.querySelector('[data-minutes]'),
-    seconds: document.querySelector('[data-seconds]'),
+    days: document.querySelector('span[data-days]'),
+    hours: document.querySelector('span[data-hours]'),
+    minutes: document.querySelector('span[data-minutes]'),
+    seconds: document.querySelector('span[data-seconds]'),
 };
+flatpickr(refs.inputEl, options);
+const fp = flatpickr(refs.inputEl, options); 
 
 class Timer {
     constructor({onTime}) {
@@ -49,37 +54,48 @@ class Timer {
     }
 
 
-    start() {
+    startTimer() {
         if (this.isActive) {
             return;
         }
-        const startTime = Date.now();
+
+        // const startTime = Date.now();
         this.isActive = true;
 
         this.intervalId = setInterval(() => {
             const currentTime = Date.now();
-            const deltaTime = currentTime - startTime;
+            const deltaTime = fp.selectedDates[0] - currentTime;
             const time = convertMs(deltaTime);
 
             console.log(time);
 
             this.onTime(time);
+            if (deltaTime < 1000) {
+            clearInterval(this.intervalId);
+        }
             // updateClockTime(time);
         }, 1000)
+        
     }
 }
 const timer = new Timer({
     onTime: updateClockTime,
 });
 // timer.start(); 
+
+
     
 function updateClockTime({ days, hours, minutes, seconds }) {
-    inputEl.textContent = `${days}:${hours}:${minutes}:${seconds}`;
+    refs.days.textContent = days;
+    refs.hours.textContent = hours;
+    refs.minutes.textContent = minutes;
+    refs.seconds.textContent = seconds;
+    // inputEl.textContent = `${days}:${hours}:${minutes}:${seconds}`;
 }
 
-refs.startBtn.addEventListener('click', () => {
-    timer.start();
-})
+
+
+refs.startBtn.addEventListener('click', () => timer.startTimer());
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -106,4 +122,6 @@ console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20
 
 function addLeadingZero(value) {
     return String(value).padStart(2, '0');
-}
+};
+
+
