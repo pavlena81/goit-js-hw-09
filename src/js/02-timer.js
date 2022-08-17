@@ -14,7 +14,7 @@ import "flatpickr/dist/flatpickr.min.css";
 import "flatpickr/dist/themes/material_green.css";
 
 let deltaTime = 0;
-const inputEl = document.getElementById('datetime-picker');
+// const inputEl = document.getElementById('#datetime-picker');
 
 const refs = {
     inputEl:document.querySelector('#datetime-picker'),
