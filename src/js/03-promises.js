@@ -51,9 +51,9 @@ function createPromise(position, delay) {
 function onCreatePromise(e) {
   e.preventDefault();
 
-   delay = Number(e.currentTarget.delay.value);
-   step = Number(e.currentTarget.step.value);
-   amount = Number(e.currentTarget.amount.value);
+   let delay = Number(e.currentTarget.delay.value);
+   let step = Number(e.currentTarget.step.value);
+   let amount = Number(e.currentTarget.amount.value);
 
   if (delay >= 0 && step >=0 && amount > 0) {
     for (let position = 1; position <= amount; position += 1 ){
